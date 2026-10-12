@@ -30,6 +30,73 @@ import type { Project } from "@/types";
  */
 export const projects: Project[] = [
   {
+    slug: "case-vault",
+    title: "Case Vault",
+    summary:
+      "A paperless court records system for Nigerian state courts: file and track cases, manage dockets and hearings, and let the public search a case without an account.",
+    description:
+      "Case Vault replaces the paper registry with a searchable record. Clerks file and track cases, hearings are scheduled against a shared calendar, documents are held off-site, and the public can look up any case by number without signing in.",
+    role: "Sole developer",
+    stack: ["Next.js", "TypeScript", "PostgreSQL"],
+    status: "pre-launch",
+    coverImage: "/case-vault.png",
+    coverImageAlt:
+      "Case Vault's landing page, headed 'The case file, finally out of the filing cabinet.', with a case-number search field reading 'LD/2451/2026' beneath it and buttons to find a court or create an account.",
+    problem:
+      "A registry kept on paper holds every case in exactly one place. The file moves only when somebody carries it, can be read by one person at a time, and cannot be searched at all — so a question as simple as what happened in a matter begins with finding the file.",
+    approach:
+      "Treat the registry as the record and everything else as a view of it. Cases, parties, hearings, dockets and documents are separate screens over one case record rather than separate systems, and access is split by role: clerks and attorneys sign in, the public case search does not.",
+    implementation:
+      "A Next.js App Router application over PostgreSQL, with role-based access separating the staff workspaces from the public search. The court finder is a four-step flow — court type, state, action, results — so a visitor who does not know how the courts are organised can still reach a case.",
+    /**
+     * Pre-launch, and the product says so on every screen: each one carries a
+     * "A demonstration system" footer. Nothing here may describe it as in use.
+     *
+     * The landing page also carries a "Now serving state-level courts
+     * nationwide" badge, which asserts a relationship with courts this has
+     * never had. It is deliberately not repeated anywhere in this data,
+     * including in `coverImageAlt` — alt text describes the picture, but
+     * quoting an overclaim into it would launder the claim into the page.
+     * The "demonstration system" footer IS quoted, in the gallery, because
+     * that one is the screen being honest about its own limits.
+     */
+    outcome:
+      "Pre-launch. The system is built and deployed as a working demonstration; no court is running on it yet.",
+    // nextSteps is deliberately absent. Every word of it would be invented: no
+    // screenshot or supplied detail says what comes next, and the accuracy
+    // rules prefer a shorter case study to a padded one.
+    liveUrl: "https://case-vault-v2.vercel.app/",
+    /**
+     * Ordered along the product's own path: the public route in — find a court,
+     * then create the account — and then the staff modules the account opens,
+     * in the order the sidebar presents them.
+     */
+    gallery: [
+      {
+        src: "/case-vault-court-finder.png",
+        alt: "The Court Finder, headed 'Four quick steps — choose a court type, pick a state, then search a case or browse branches near you. No account needed.', showing step 1 of 4: Magistrate, High, Customary and Sharia Courts tagged 'State', and Federal High Court and Court of Appeal tagged 'Federal'.",
+      },
+      {
+        src: "/case-vault-register.png",
+        alt: "The account creation screen, headed 'Create your account', with a role choice between Court Clerk and Attorney and a note that judge and admin accounts are provisioned by an administrator, above full-name, email and password fields. The left panel reads 'Justice delayed by paperwork is justice denied. Case Vault keeps the registry moving.', and the footer labels the product a demonstration system.",
+      },
+      {
+        src: "/case-vault-registry.png",
+        alt: "The Case Registry dashboard, whose sidebar separates Registry functions from Modules — hearings, documents, dockets, parties — above four counters for total cases, open, pending and upcoming hearings. Beneath sit a searchable case table showing case number, title, court, status and filing date, and a panel of upcoming hearings.",
+      },
+      {
+        src: "/case-vault-hearings.png",
+        alt: "The Hearing Scheduler, headed 'Plan and track every sitting, with automatic conflict detection.', with counters for scheduled, this week, completed and adjourned sittings above a calendar that groups each date's sittings by time, court and case.",
+      },
+      {
+        src: "/case-vault-documents.png",
+        alt: "The Document Vault, headed 'Every pleading, exhibit and order — stored securely off-site.', with counters for documents, categories, storage used and encryption at rest, above a grid of uploaded pleadings and exhibits each showing its case number, size and date.",
+      },
+    ],
+    featured: true,
+    published: true,
+  },
+  {
     slug: "admission-copilot",
     title: "Admission Copilot",
     summary:

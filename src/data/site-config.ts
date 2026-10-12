@@ -12,7 +12,7 @@ export const siteConfig: SiteConfig = {
   name: "Bamidele Idowu",
   headline: "I build web products people actually use.",
   description:
-    "Bamidele Idowu — remote web developer and instructor. I build MVPs, business websites, and digital products, and help teams learn along the way.",
+    "Bamidele Idowu — Software Engineer and instructor. I build MVPs, business websites, and digital products, and help teams learn along the way.",
 
   locationLabel: "King's Landing, Westeros",
   // Used by the local-time display (TRD section 8).
