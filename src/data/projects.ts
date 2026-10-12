@@ -149,7 +149,47 @@ export const projects: Project[] = [
     //   "TODO: confirm planned curriculum or product improvements",
     // The live product.
     liveUrl: "https://stockschool-mu.vercel.app",
-    // gallery: [{ src: "/stock-school-2.png", alt: "…" }],
+    /**
+     * Ordered to follow the product's own navigation — Learn, Explore,
+     * Simulate, On-Chain, Progress — with the two Learn sub-screens kept
+     * together behind the dashboard they belong to.
+     *
+     * The cover already shows the landing page, so nothing here repeats it.
+     * The Explore and Simulate captures both carry the product's own
+     * "You are looking at sample data" banner, which is described rather than
+     * cropped away: StockSchool's honesty about what is simulated is the point
+     * of the product, not an artifact of the screenshot.
+     */
+    gallery: [
+      {
+        src: "/stock-school-learn.png",
+        alt: "StockSchool's Learn dashboard, showing 1 of 8 lessons completed above a row of eight numbered lesson chips, with lesson 01 marked Completed, a 'Pick up where you left off' card for lesson 02, The Token.",
+      },
+      {
+        src: "/stock-school-lesson.png",
+        alt: "A lesson page: lesson 02, The Token, tagged Beginner and 7 min and marked 'In progress', above a card headed 'By the end of this lesson' that states in plain terms what the learner will be able to explain. A 'On this page' contents rail runs down the right.",
+      },
+      {
+        src: "/stock-school-figure.png",
+        alt: "An interactive figure headed 'Where a token actually lives', with Back and Next controls stepping through 4 stages and a checkbox to apply a 2-for-1 split. Four labelled panels — company register, custody account, smart contract, wallet — each hold a quantity of 1, above a stat row reading 1 share on register, 1 token in existence, $100.00 per token, and $100.00 total value.",
+      },
+      {
+        src: "/stock-school-explore.png",
+        alt: "The Explore page, headed 'Two prices for the same share, side by side.', explaining that a tokenized stock is quoted once by the exchange and once by the on-chain pool and that the gap between them is the thing worth understanding. A banner states 'You are looking at sample data' because market data is temporarily unavailable, above a stat row: 10 tokenized stocks, 4 above reference, 4 below, widest gap +2.00% on NVDA.",
+      },
+      {
+        src: "/stock-school-simulate.png",
+        alt: "The Simulate page, headed 'Your first trade, somewhere it cannot cost you anything.', describing a $10,000.00 virtual balance that never touches a wallet or a blockchain. The same sample-data banner appears above a panel headed 'What this does not do': no keys or signatures can move a real asset, no fees, gas, or slippage are modelled, and past simulated results say nothing about future real ones.",
+      },
+      {
+        src: "/stock-school-onchain.png",
+        alt: "The On-Chain Lab, headed 'Everything else here is our word for it. This page is not.', with a contract-address field that accepts an address or a block-explorer link beside a 'Read contract' button, and network chips for Ethereum, BNB Smart Chain, and Base. A note reads 'We only ever read from a contract. No wallet, no signature, nothing written.'",
+      },
+      {
+        src: "/stock-school-progress.png",
+        alt: "The Progress page, headed 'Everything you have finished, and nothing you have not.', stating plainly that it keeps no streaks and no badges. A panel records 1 of 8 lessons completed — '2 opened, 6 still marked later' — with 0 of 5 missions passed, no quiz attempted yet, and 7 lessons left in the course, above a quiz record section noting a 70% pass mark.",
+      },
+    ],
     featured: true,
     published: true,
   },

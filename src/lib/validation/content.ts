@@ -69,6 +69,15 @@ const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 /** Availability claims go stale. After this many days the status must be re-confirmed. */
 const AVAILABILITY_MAX_AGE_DAYS = 60;
 
+/**
+ * How far ahead of the build clock a review date may sit before it counts as
+ * wrong rather than as clock skew.
+ *
+ * A build machine can legitimately read a date as "tomorrow" relative to the
+ * author's timezone, so a few hours of drift must not fail the gate.
+ */
+const AVAILABILITY_FUTURE_TOLERANCE_DAYS = 1;
+
 export function validateContent(
   now: Date = new Date(),
   sources: ContentSources = liveSources,
@@ -261,6 +270,18 @@ export function validateContent(
       add(
         "siteConfig.availability",
         `Availability was last confirmed ${Math.floor(ageDays)} days ago. Re-confirm it, or the site is claiming a status nobody has checked.`,
+      );
+    } else if (ageDays < -AVAILABILITY_FUTURE_TOLERANCE_DAYS) {
+      // A future date is not a fresher claim than an old one, it is an
+      // unconfirmed one: nobody can have reviewed their availability on a day
+      // that has not happened yet. Only staleness was checked here, so a
+      // typo'd year sailed through the gate while making the page assert
+      // something impossible. Checked against `lastReviewed` rather than
+      // `availability`, because unlike staleness this is always a data-entry
+      // mistake and never a legitimate change of state.
+      add(
+        "siteConfig.availability.lastReviewed",
+        `Availability review date is ${Math.floor(-ageDays)} days in the future. It cannot have been reviewed yet.`,
       );
     }
   }

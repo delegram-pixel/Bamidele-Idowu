@@ -1,3 +1,6 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
+
 import { describe, expect, it } from "vitest";
 
 import {
@@ -65,6 +68,19 @@ describe("project data integrity", () => {
   it("uses a unique slug for every project", () => {
     const slugs = projects.map((project) => project.slug);
     expect(new Set(slugs).size).toBe(slugs.length);
+  });
+
+  it("uses only gallery image files that exist in public", () => {
+    const publicDir = path.join(process.cwd(), "public");
+
+    for (const project of projects) {
+      for (const image of project.gallery ?? []) {
+        const filePath = path.join(publicDir, image.src.replace(/^\//, ""));
+        expect(existsSync(filePath), `${project.slug} references missing asset: ${image.src}`).toBe(
+          true,
+        );
+      }
+    }
   });
 
   it("lists the technologies for every project, including withheld ones", () => {

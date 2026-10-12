@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 
-import { Analytics } from "@/components/analytics/Analytics";
+import { Analytics } from "@vercel/analytics/next";
 import { ContactPrefillProvider } from "@/components/contact/ContactPrefillContext";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";

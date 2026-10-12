@@ -377,6 +377,26 @@ describe("site configuration rules", () => {
 
     expect(pathsFor(sources)).not.toContain("siteConfig.availability");
   });
+
+  it("rejects an availability date in the future, which nobody could have confirmed", () => {
+    const sources = makeSources();
+    // `NOW` is 2026-06-15, so this is a week ahead — the shape a typo'd year
+    // takes once the day and month happen to line up.
+    sources.siteConfig.availability.lastReviewed = "2026-06-22";
+
+    expect(pathsFor(sources)).toContain("siteConfig.availability.lastReviewed");
+  });
+
+  it("tolerates a review date a few hours ahead, which is only clock skew", () => {
+    const sources = makeSources();
+    // Tomorrow, as seen by a build run late in the evening in a timezone ahead
+    // of the one the date was written in. Drift, not a mistake.
+    sources.siteConfig.availability.lastReviewed = "2026-06-16";
+
+    expect(pathsFor(sources)).not.toContain(
+      "siteConfig.availability.lastReviewed",
+    );
+  });
 });
 
 describe("pricing rules", () => {
@@ -452,20 +472,33 @@ describe("getBlockingIssues", () => {
 
 describe("the repository's real content", () => {
   /**
-   * These assert the state of the actual data files. They are intentionally
-   * written as "the gate is doing its job" rather than "the content is fine",
-   * because the content is deliberately incomplete until Bamidele confirms it.
+   * These assert the state of the actual data files rather than a fixture.
+   *
+   * The first one used to assert the opposite — that the gate was still
+   * blocking the build because placeholders remained. It failed on schedule
+   * when the last of them was resolved, which is what it was written to do.
    */
 
-  it("currently blocks a production build, because placeholders remain", () => {
-    // When real content lands, this test should be updated to assert the
-    // opposite — a passing build. It failing is the signal to do that.
-    const issues = getBlockingIssues(validateContent(NOW));
-    expect(issues.length).toBeGreaterThan(0);
+  it("passes the gate, with every placeholder resolved", () => {
+    // The real clock, deliberately, rather than the frozen `NOW` the fixtures
+    // use: this mirrors what `prebuild` actually runs. It therefore goes red
+    // once the availability claim ages past its window, which is the same
+    // condition that fails the build. That redness is the signal, not a flake.
+    expect(getBlockingIssues(validateContent(new Date()))).toEqual([]);
   });
 
-  it("reports every blocker with a path, so the output is actionable", () => {
-    for (const issue of getBlockingIssues(validateContent(NOW))) {
+  it("reports every blocker with a path and a message, so the output is actionable", () => {
+    // Against a fixture that definitely trips rules. Run against the real
+    // content this would now pass vacuously, because the real content trips
+    // none — a test that cannot fail is not a test.
+    const broken = makeSources({
+      projects: [makeProject({ slug: "Not Kebab", role: "TODO: confirm" })],
+    });
+
+    const issues = getBlockingIssues(validateContent(NOW, broken));
+
+    expect(issues.length).toBeGreaterThan(0);
+    for (const issue of issues) {
       expect(issue.path).toBeTruthy();
       expect(issue.message).toBeTruthy();
     }
