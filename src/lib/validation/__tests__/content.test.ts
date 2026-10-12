@@ -179,6 +179,74 @@ describe("project rules", () => {
     expect(pathsFor(makeSources())).not.toContain("projects[0].coverImageAlt");
   });
 
+  it("accepts a gallery image with a public path and alt text", () => {
+    const sources = makeSources({
+      projects: [
+        makeProject({
+          gallery: [{ src: "/shot-two.png", alt: "The results panel, filled in." }],
+        }),
+      ],
+    });
+
+    expect(pathsFor(sources)).not.toContain("projects[0].gallery[0].src");
+    expect(pathsFor(sources)).not.toContain("projects[0].gallery[0].alt");
+  });
+
+  it("rejects a gallery image whose path is not rooted at /public", () => {
+    // "shot-two.png" resolves relative to the current route, so it would load
+    // on one page and 404 on every other.
+    const sources = makeSources({
+      projects: [
+        makeProject({ gallery: [{ src: "shot-two.png", alt: "A second view." }] }),
+      ],
+    });
+
+    expect(pathsFor(sources)).toContain("projects[0].gallery[0].src");
+  });
+
+  it("rejects a gallery image with no alt text", () => {
+    const sources = makeSources({
+      projects: [makeProject({ gallery: [{ src: "/shot-two.png", alt: "   " }] })],
+    });
+
+    expect(pathsFor(sources)).toContain("projects[0].gallery[0].alt");
+  });
+
+  it("rejects the same image listed twice in one gallery", () => {
+    const sources = makeSources({
+      projects: [
+        makeProject({
+          gallery: [
+            { src: "/shot-two.png", alt: "A second view." },
+            { src: "/shot-two.png", alt: "The same view, listed again." },
+          ],
+        }),
+      ],
+    });
+
+    expect(pathsFor(sources)).toContain("projects[0].gallery[1].src");
+  });
+
+  it("warns, without blocking, when the gallery repeats the cover image", () => {
+    const sources = makeSources({
+      projects: [
+        makeProject({
+          coverImage: "/cover.png",
+          coverImageAlt: "The cover.",
+          gallery: [{ src: "/cover.png", alt: "The cover, shown again." }],
+        }),
+      ],
+    });
+
+    const duplicate = validateContent(NOW, sources).find(
+      (issue) => issue.path === "projects[0].gallery[0].src",
+    );
+
+    expect(duplicate?.severity).toBe("warning");
+    // A warning must not fail the build, which is what `pathsFor` filters to.
+    expect(pathsFor(sources)).not.toContain("projects[0].gallery[0].src");
+  });
+
   it.each(["javascript:alert(1)", "not-a-url", "ftp://example.com/file"])(
     "rejects the unsafe link %s",
     (url) => {
@@ -187,9 +255,20 @@ describe("project rules", () => {
     },
   );
 
-  it("rejects a live URL on a pre-launch project", () => {
+  it("allows a live URL on a pre-launch project, which may point at a preview build", () => {
+    // The blanket prohibition was removed: a pre-launch project can legitimately
+    // link to a demo or preview. The stage is carried by the badge and by the
+    // link wording in ProjectMetadata instead of by withholding the link.
     const sources = makeSources({
       projects: [makeProject({ status: "pre-launch", liveUrl: "https://example.com" })],
+    });
+
+    expect(pathsFor(sources)).not.toContain("projects[0].liveUrl");
+  });
+
+  it("still rejects a pre-launch project's live URL when it is not a safe URL", () => {
+    const sources = makeSources({
+      projects: [makeProject({ status: "pre-launch", liveUrl: "javascript:alert(1)" })],
     });
 
     expect(pathsFor(sources)).toContain("projects[0].liveUrl");

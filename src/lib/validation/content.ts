@@ -4,7 +4,7 @@ import { projects } from "@/data/projects";
 import { services } from "@/data/services";
 import { siteConfig } from "@/data/site-config";
 import { findPlaceholders } from "@/lib/utils/placeholder";
-import { isSafeExternalUrl } from "@/lib/utils/url";
+import { isLocalAssetPath, isSafeExternalUrl } from "@/lib/utils/url";
 import {
   PROJECT_TYPES,
   type PricingItem,
@@ -127,6 +127,47 @@ export function validateContent(
       add(`${at}.coverImageAlt`, "Alt text set without a cover image.");
     }
 
+    // Gallery images are held to the same standard as the cover, plus two
+    // mistakes only a list can make: the same shot listed twice, and the cover
+    // repeated inside the gallery so the page shows it twice.
+    if (project.gallery) {
+      const seenGallerySources = new Set<string>();
+
+      project.gallery.forEach((image, imageIndex) => {
+        const imageAt = `${at}.gallery[${imageIndex}]`;
+
+        if (!isLocalAssetPath(image.src)) {
+          add(
+            `${imageAt}.src`,
+            `"${image.src}" is not a path under /public — it must start with "/".`,
+          );
+        }
+
+        // A screenshot is never decorative, so empty alt text is never correct
+        // here. The type requires the field to exist; this requires it to say
+        // something.
+        if (image.alt.trim().length === 0) {
+          add(`${imageAt}.alt`, "Every gallery image needs alt text describing it.");
+        }
+
+        if (seenGallerySources.has(image.src)) {
+          add(
+            `${imageAt}.src`,
+            `"${image.src}" appears more than once in this gallery.`,
+          );
+        }
+        seenGallerySources.add(image.src);
+
+        if (project.coverImage && image.src === project.coverImage) {
+          add(
+            `${imageAt}.src`,
+            "This is already the cover image, so the gallery shows it twice.",
+            "warning",
+          );
+        }
+      });
+    }
+
     for (const [field, value] of [
       ["liveUrl", project.liveUrl],
       ["repositoryUrl", project.repositoryUrl],
@@ -136,13 +177,14 @@ export function validateContent(
       }
     }
 
-    // Pre-launch means there is nothing to visit yet.
-    if (project.status === "pre-launch" && project.liveUrl) {
-      add(
-        `${at}.liveUrl`,
-        "Pre-launch projects must not link to a live URL (PRD section 8).",
-      );
-    }
+    // A `pre-launch` project may carry a `liveUrl`. The rule that forbade it
+    // was dropped deliberately: the link can point at a preview or a demo
+    // build, which is a real thing a visitor can open, and the prohibition
+    // blocked that honest case as well as the dishonest one. The distinction
+    // between "launched" and "not launched yet" is now carried by the status
+    // badge and by the link's own wording in `ProjectMetadata`, which follows
+    // the status — so nothing on the page claims a pre-launch product is live.
+    // The URL is still required to be a safe absolute http(s) URL above.
 
     if (project.published && project.summary.trim().length < 40) {
       add(

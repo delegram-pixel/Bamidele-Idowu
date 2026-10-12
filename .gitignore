@@ -35,3 +35,15 @@ next-env.d.ts
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Internal working documents — never published.
+# The brief and the specifications describe how this site is built, in enough
+# detail to be reproduced, and they record which claims are still unconfirmed.
+# They stay local. If one of these is ever meant to be public, delete its line.
+/ENGINEERING-NOTES.md
+/design-brief.md
+/prd.md
+/trd.md
+/app-flow.md
+/backend-schema.md
+/implementation.md

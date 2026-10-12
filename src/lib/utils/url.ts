@@ -31,6 +31,23 @@ export function absoluteUrl(path: string, siteUrl: string): string {
   return `${base}${suffix}`;
 }
 
+/**
+ * True when a path points at a file served from `public/`.
+ *
+ * Deliberately strict about the leading slash. `"shot.png"` looks like a valid
+ * path and is one — resolved relative to whatever route it happens to render
+ * on, so it loads from the site root on the homepage and 404s on every case
+ * study. Requiring the leading slash makes that mistake fail the content gate
+ * instead of shipping a broken image.
+ *
+ * `//host/path` is rejected too: that is a protocol-relative URL, which is
+ * off-site despite starting with a slash.
+ */
+export function isLocalAssetPath(path: string | undefined): boolean {
+  if (!path) return false;
+  return path.startsWith("/") && !path.startsWith("//");
+}
+
 /** Build a `mailto:` link with an optional prefilled subject. */
 export function mailtoUrl(email: string, subject?: string): string {
   if (!subject) return `mailto:${email}`;

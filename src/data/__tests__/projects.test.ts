@@ -90,12 +90,19 @@ describe("PRD section 8 accuracy rules", () => {
     expect(narrative).toContain("does not execute real trades");
   });
 
-  it("gives no project a live URL while its status is pre-launch", () => {
-    for (const project of projects) {
-      if (project.status === "pre-launch") {
-        expect(project.liveUrl).toBeUndefined();
-      }
-    }
+  it("states plainly that Admission Copilot is pre-launch, since it can still be linked", () => {
+    // This replaced a test asserting no pre-launch project carried a live URL.
+    // Product links are now allowed at every status, so the guarantee that
+    // survives is the one PRD section 8 actually cares about: the project's own
+    // copy says which stage it is at rather than leaving a visitor to infer it
+    // from a link that opens.
+    const admissionCopilot = getProjectBySlug("admission-copilot");
+    const narrative = [admissionCopilot?.description, admissionCopilot?.outcome]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    expect(narrative).toContain("pre-launch");
   });
 
   it("carries no invented metrics, testimonials, or user counts", () => {

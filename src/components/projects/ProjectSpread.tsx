@@ -1,7 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
 
 import { TrackedLink } from "@/components/analytics/TrackedLink";
-import { ProjectArt } from "@/components/projects/ProjectArt";
+import { FallbackArt } from "@/components/projects/FallbackArt";
 import { ProjectMetadata } from "@/components/projects/ProjectMetadata";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { ANALYTICS_EVENTS } from "@/lib/analytics/events";
@@ -29,6 +29,15 @@ interface ProjectSpreadProps {
  * `overflow-x` scroller, which computes `overflow-y` to `auto`, so the shadow
  * would be clipped vertically and could produce a scrollbar inside the rail.
  * The hairline alone is enough to separate the plate from the canvas.
+ *
+ * The art on the landing page is generated, not the project's real screenshot.
+ * The screenshots come from products with their own colour systems, and at this
+ * size against the claret/blush canvas they read as foreign objects pasted into
+ * the page rather than as part of it. The duotone plates hold the composition,
+ * and the genuine screenshot appears on the case study itself, where it is the
+ * subject rather than decoration. This is a deliberate split: swapping
+ * `FallbackArt` back to `ProjectArt` here would put the raw screenshots back on
+ * the homepage.
  */
 export function ProjectSpread({ project, index, total }: ProjectSpreadProps) {
   const isReversed = index % 2 === 1;
@@ -44,9 +53,9 @@ export function ProjectSpread({ project, index, total }: ProjectSpreadProps) {
     >
       <article className="grid h-full gap-8 lg:grid-cols-12 lg:items-center lg:gap-12">
         <div className={cn("lg:col-span-7", isReversed && "lg:order-2")}>
-          <ProjectArt
-            project={project}
-            sizes="(min-width: 1280px) 60vw, (min-width: 1024px) 70vw, 100vw"
+          <FallbackArt
+            seed={project.slug}
+            label={project.title}
             className="aspect-16/11 rounded-plate border border-line-strong"
           />
         </div>

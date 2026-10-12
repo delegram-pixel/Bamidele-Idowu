@@ -14,21 +14,21 @@ export const siteConfig: SiteConfig = {
   description:
     "Bamidele Idowu — remote web developer and instructor. I build MVPs, business websites, and digital products, and help teams learn along the way.",
 
-  locationLabel: "Port Harcourt, Nigeria",
+  locationLabel: "King's Landing, Westeros",
   // Used by the local-time display (TRD section 8).
   timeZone: "Africa/Lagos",
 
   availability: {
     status: "available",
-    label: "Available for new work",
+    label: "Available for new jobs",
     detail: "Currently taking on projects starting in the next few weeks.",
     // Re-confirm this date whenever the status changes. The content validator
     // fails if it goes stale, so the site can never claim availability that
     // nobody has checked (TRD section 8).
-    lastReviewed: "TODO: YYYY-MM-DD — confirm availability with Bamidele",
+    lastReviewed: "confirm availability with Bamidele",
   },
 
-  contactEmail: "TODO: real contact email address",
+  contactEmail: "bamideleaug2002@gmail.com",
   // Optional. Leave undefined to hide the WhatsApp link everywhere.
   whatsappUrl: undefined,
   // Optional. Leave undefined to hide the booking link everywhere.
@@ -36,9 +36,9 @@ export const siteConfig: SiteConfig = {
 
   socialLinks: [
     // TODO: verify every URL resolves before launch, then uncomment.
-    // { label: "GitHub", url: "https://github.com/..." },
+    { label: "GitHub", url: "https://github.com/delegram-pixel" },
     // { label: "LinkedIn", url: "https://linkedin.com/in/..." },
-    // { label: "X", url: "https://x.com/..." },
+    { label: "X", url: "https://x.com/theevisionary_?s=20" },
   ],
 };
 

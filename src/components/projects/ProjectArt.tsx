@@ -25,6 +25,14 @@ interface ProjectArtProps {
  * The wrapper carries the aspect ratio in both branches, so the reserved space
  * is identical either way and the switch cannot cause a layout shift
  * (TRD section 12).
+ *
+ * The image is `object-contain`, not `object-cover`. Cover fills the frame and
+ * clips whatever overflows, which sliced the edges off every screenshot that
+ * did not happen to match the frame's ratio — a real browser capture losing its
+ * sidebar and half a headline is worse than useless on a page whose job is to
+ * show the work. Contain shows the whole image and lets the plate's background
+ * take up the slack, so the frame reads as a mount around a print. The plate is
+ * `bg-plate` (white) for exactly this reason.
  */
 export function ProjectArt({ project, className, priority = false, sizes }: ProjectArtProps) {
   if (!project.coverImage) {
@@ -43,7 +51,7 @@ export function ProjectArt({ project, className, priority = false, sizes }: Proj
         priority={priority}
         // Below-the-fold imagery defers until near the viewport.
         loading={priority ? "eager" : "lazy"}
-        className="object-cover"
+        className="object-contain"
       />
     </div>
   );

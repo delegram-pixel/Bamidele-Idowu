@@ -13,6 +13,17 @@ import type { Project } from "@/types";
  *    case study simply omits that block.
  *  - `coverImage` points at a genuine, approved screenshot. While it is absent
  *    the case study renders generated fallback art, which is intentional.
+ *  - `gallery` holds further genuine screenshots. Files live in `public/` and
+ *    are referenced from the site root, e.g. `"/admission-copilot-2.png"` —
+ *    the leading slash is required, and the gate rejects a path without it
+ *    because it would resolve relative to whatever route rendered it. Every
+ *    gallery image needs its own alt text.
+ *  - `liveUrl` is the link to the product itself and may be set at any status,
+ *    `pre-launch` included: a preview, a prototype, or a testnet build is still
+ *    something a visitor can open, and withholding the link until launch helps
+ *    nobody. The wording of that link follows the status (see
+ *    `ProjectMetadata`), so it never claims a launch that has not happened.
+ *    `repositoryUrl` is the same idea for source.
  *  - Every `TODO:` fails `yarn validate:content`, so nothing unconfirmed can
  *    reach a production build.
  * ---------------------------------------------------------------------------
@@ -25,10 +36,13 @@ export const projects: Project[] = [
       "A guided assistant that helps applicants work through admission requirements without losing track of what is still outstanding.",
     description:
       "Admission Copilot turns a scattered admission process into a sequence of clear, checkable steps. Applicants see what is required, what they have completed, and what is blocking them next.",
-    role: "TODO: confirm exact role (e.g. sole developer, frontend lead)",
+    role: "Team Lead",
     stack: ["Next.js", "TypeScript", "Tailwind CSS"],
     // Must be labelled accurately as pre-launch (PRD section 8).
     status: "pre-launch",
+    coverImage: "/admission-copilot.png",
+    coverImageAlt:
+      "Admission Copilot's eligibility page: the headline 'Find out if you qualify, before it's too late.' beside a panel of five O'level results, with a callout that one credit is still outstanding.",
     problem:
       "Admission requirements are spread across PDFs, emails, and portal messages. Applicants lose track of deadlines and documents, and only discover a missing item when it is too late to fix it comfortably.",
     approach:
@@ -39,7 +53,13 @@ export const projects: Project[] = [
       "Pre-launch. The product is built and being prepared for its first cohort of applicants.",
     nextSteps:
       "Onboard an initial group of applicants, then review where they get stuck and adjust the requirement model accordingly.",
-    // No liveUrl yet — it is pre-launch.
+    // The product link. Admission Copilot is pre-launch, so this row reads
+    // "Preview" rather than "Visit site": the link opens a working build, and
+    // nothing on the page claims the product has launched.
+    liveUrl: "https://education-ten-wheat.vercel.app",
+    // Further screenshots, shown in a gallery below the case-study story.
+    // Add the files to `public/` and list them here.
+    // gallery: [{ src: "/admission-copilot-2.png", alt: "…" }],
     featured: true,
     published: true,
   },
@@ -50,18 +70,24 @@ export const projects: Project[] = [
       "An event platform for creating, publishing, and managing events with ticketing and attendee flows.",
     description:
       "Iventverse handles the event lifecycle end to end: organisers publish an event, attendees discover and register for it, and both sides get a clear view of what happens next.",
-    role: "TODO: confirm Bamidele's exact role on Iventverse (PRD section 8)",
+    role: "Front-end Developer",
     stack: ["Next.js", "TypeScript", "Node.js", "PostgreSQL"],
     status: "live",
+    coverImage: "/iventverse.png",
+    coverImageAlt:
+      "Iventverse's Festival listings: two event cards showing artwork, date, venue, and organiser, under tabs for Upcoming, All, and Past.",
     problem:
       "Event organisers juggle separate tools for publishing an event, collecting registrations, and communicating with attendees. The handoffs between those tools are where details get lost.",
     approach:
       "Keep the organiser's event record as the single source of truth and derive the attendee-facing experience from it, so the two can never disagree.",
     implementation:
       "A Next.js front end over a typed API layer, with the event lifecycle modelled explicitly rather than as loose status strings.",
-    outcome: "TODO: confirm current status and any verifiable outcome before publishing",
-    nextSteps:
-      "TODO: confirm which improvements are planned before describing next steps",
+    // outcome: "TODO: confirm current status and any verifiable outcome before publishing",
+    // nextSteps:
+    //   "TODO: confirm which improvements are planned before describing next steps",
+    // The live product.
+    liveUrl: "https://iventverse.com",
+    // gallery: [{ src: "/iventverse-2.png", alt: "…" }],
     featured: true,
     published: true,
   },
@@ -72,9 +98,12 @@ export const projects: Project[] = [
       "An educational platform for learning how tokenized equities work, using simulated positions only.",
     description:
       "StockSchool teaches the mechanics of tokenized equities in a risk-free setting. Learners work through concepts with simulated positions so they can understand how the instruments behave before risking real money.",
-    role: "TODO: confirm exact role",
+    role: "Lead Developer",
     stack: ["Next.js", "TypeScript", "Tailwind CSS"],
     status: "live",
+    coverImage: "/stock-school.png",
+    coverImageAlt:
+      "StockSchool's landing page, labelled 'BNB Hack · Tokenized Stocks Edition', with the headline 'A stock is a claim. A token is a record. Together they get strange.' beside a sample panel setting each asset's on-chain price against its reference price.",
     problem:
       "Tokenized equities are difficult to learn about from documentation alone. Reading definitions does not build the intuition that comes from seeing a position respond to market movement.",
     approach:
@@ -87,29 +116,36 @@ export const projects: Project[] = [
      */
     outcome:
       "Live as an educational tool. StockSchool does not execute real trades: all positions are simulated for learning purposes only.",
-    nextSteps:
-      "TODO: confirm planned curriculum or product improvements",
+    // nextSteps:
+    //   "TODO: confirm planned curriculum or product improvements",
+    // The live product.
+    liveUrl: "https://stockschool-mu.vercel.app",
+    // gallery: [{ src: "/stock-school-2.png", alt: "…" }],
     featured: true,
     published: true,
   },
   {
-    slug: "next-horizon-hub",
-    title: "Next Horizon Hub",
+    slug: "thermal-basket",
+    title: "Thermal Basket",
     summary:
-      "A client website project delivered for Next Horizon Hub.",
+      "A testnet app for publishing a themed basket of tokenized equities as a single on-chain token.",
     description:
-      "TODO: confirm the approved public description with the client before enabling this case study.",
-    role: "TODO: confirm role",
-    stack: ["TODO: confirm stack"],
-    status: "live",
-    /**
-     * Held back deliberately. PRD section 8 and app-flow section 12 require
-     * written client permission before this becomes a public case study.
-     * Flipping `published` to true is the only change needed once that is
-     * confirmed — the route and layout already exist.
-     */
+      "Thermal Basket publishes a theme as a fixed set of tokenized equities held together on-chain. Depositing the settlement asset returns a basket token that can be redeemed at net asset value, and every weight, fee, and holding is readable from the contract that holds it. The deployment runs on BNB Smart Chain testnet against a mock price feed, so nothing it displays is market data or a quotation.",
+    role: "Lead Developer",
+    stack: ["Next.js", "TypeScript", "Tailwind CSS"],
+    status: "prototype",
+    coverImage: "/thermal-basket.png",
+    coverImageAlt:
+      "Thermal Basket's landing page, headed 'Own a theme, not a ticker.', with a column of protocol figures beside a notice that every price and valuation comes from a simulated mock feed on BNB Smart Chain testnet.",
+    // Outbound links. Both must be absolute http(s) URLs, and a link may be set
+    // at any status. The row is omitted entirely while one is unset (see
+    // ProjectMetadata). This is the BNB Smart Chain testnet deployment, which is
+    // why the row reads "Open prototype" rather than "Visit site".
+    liveUrl: "https://thermal-basket.vercel.app",
+    // gallery: [{ src: "/thermal-basket-2.png", alt: "…" }],
+    // repositoryUrl: "https://github.com/delegram-pixel/…",
     featured: true,
-    published: false,
+    published: true,
   },
 ];
 

@@ -18,6 +18,22 @@ export type ProjectStatus =
   | "in-progress"
   | "archived";
 
+/**
+ * One image in a project gallery.
+ *
+ * Alt text is part of the image rather than a parallel array, because a gallery
+ * is a list of captioned artefacts and splitting the two is how they drift. It
+ * is required, not optional: a gallery image without alt text is unreadable to
+ * anyone using a screen reader, and these are screenshots — the one kind of
+ * image that is never decorative.
+ */
+export interface ProjectImage {
+  /** Path to a genuine, approved screenshot under `/public`. */
+  src: string;
+  /** What the screenshot shows. Required. */
+  alt: string;
+}
+
 export interface Project {
   slug: string;
   title: string;
@@ -37,7 +53,14 @@ export interface Project {
   coverImage?: string;
   /** Descriptive alt text for `coverImage`. Required when it is set. */
   coverImageAlt?: string;
-  gallery?: string[];
+  /**
+   * Additional genuine screenshots, shown on the case study below the narrative.
+   *
+   * The cover above is the single hero shot; this is everything that needs more
+   * than one image to show — a second flow, a different state, a mobile view.
+   * Optional, and an empty or absent list simply renders no gallery.
+   */
+  gallery?: ProjectImage[];
   /** Case-study narrative. Each field is optional so unfinished stories stay unfinished. */
   problem?: string;
   approach?: string;

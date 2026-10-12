@@ -4,7 +4,27 @@ import { MetaRow, MetaTable } from "@/components/ui/MetaTable";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { cn } from "@/lib/utils/cn";
 import { isSafeExternalUrl } from "@/lib/utils/url";
-import type { Project } from "@/types";
+import type { Project, ProjectStatus } from "@/types";
+
+/**
+ * Product-link wording, keyed by status.
+ *
+ * The link to the product itself is available at every status, including
+ * `pre-launch`: a preview, a prototype, or a testnet deployment is still
+ * something a visitor can open, and hiding the link until launch serves nobody.
+ * What must not happen is the row claiming more than the project has earned.
+ * The row previously read "Live / Visit site" unconditionally, which put a
+ * launch claim directly beneath a "Pre-launch" or "Prototype" badge in the same
+ * table. The wording now follows the status, so the table cannot contradict
+ * itself.
+ */
+const PRODUCT_LINK_LABEL: Record<ProjectStatus, string> = {
+  live: "Visit site",
+  "pre-launch": "Preview",
+  prototype: "Open prototype",
+  "in-progress": "Preview build",
+  archived: "View archived site",
+};
 
 /**
  * Compact project metadata: role, stack, status, and any verified outbound
@@ -60,14 +80,14 @@ export function ProjectMetadata({
       </MetaRow>
 
       {hasLiveUrl ? (
-        <MetaRow label="Live" tone={tone}>
+        <MetaRow label="Product" tone={tone}>
           <a
             href={project.liveUrl}
             target="_blank"
             rel="noopener noreferrer"
             className={linkClassName}
           >
-            Visit site
+            {PRODUCT_LINK_LABEL[project.status]}
             <ExternalLink aria-hidden="true" className="size-3.5" />
           </a>
         </MetaRow>

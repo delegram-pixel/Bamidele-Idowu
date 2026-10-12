@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 
 import { Reveal } from "@/components/motion/Reveal";
 import { ProjectArt } from "@/components/projects/ProjectArt";
+import { ProjectGallery } from "@/components/projects/ProjectGallery";
 import { ProjectMetadata } from "@/components/projects/ProjectMetadata";
 import { IndexNumber } from "@/components/ui/IndexNumber";
 import { Rule } from "@/components/ui/Rule";
@@ -115,12 +116,15 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
           <div className="lg:col-span-5">
             {/* The plate carries a hairline rather than the previous soft card.
                 The fallback art is itself a printed plate, so a shadow here
-                would stack two depth cues on the same object. */}
+                would stack two depth cues on the same object.
+                The frame is 16/10 rather than the 4/3 it was: these are browser
+                captures, which are wide, so a 4/3 frame left most of the plate
+                empty once the image was contained rather than cropped. */}
             <ProjectArt
               project={project}
               priority
               sizes="(min-width: 1024px) 40vw, 100vw"
-              className="aspect-4/3 rounded-plate border border-line-strong"
+              className="aspect-16/10 rounded-plate border border-line-strong"
             />
           </div>
         </header>
@@ -160,6 +164,20 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
               ))}
             </ol>
           </div>
+        ) : null}
+
+        {/* Extra screenshots, after the story rather than before it: the cover
+            already makes the first impression, and opening with a wall of
+            images buries the narrative this page exists to tell. Renders
+            nothing at all when a project has no gallery. */}
+        {project.gallery && project.gallery.length > 0 ? (
+          <section className="mt-16" aria-labelledby="gallery-heading">
+            <Rule label="Gallery" />
+            <h2 id="gallery-heading" className="sr-only">
+              {project.title} screenshots
+            </h2>
+            <ProjectGallery images={project.gallery} className="mt-10" />
+          </section>
         ) : null}
 
         {/* Conversion path closes here (app-flow section 5). */}

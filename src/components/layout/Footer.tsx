@@ -104,9 +104,9 @@ export function Footer() {
           <p className="label-meta text-invert-ink-muted">
             &copy; {year} {name}. All rights reserved.
           </p>
-          <p className="label-meta text-invert-ink-muted">
+          {/* <p className="label-meta text-invert-ink-muted">
             Built with Next.js and Tailwind CSS.
-          </p>
+          </p> */}
         </div>
       </div>
     </footer>
