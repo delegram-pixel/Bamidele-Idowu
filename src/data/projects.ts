@@ -57,9 +57,38 @@ export const projects: Project[] = [
     // "Preview" rather than "Visit site": the link opens a working build, and
     // nothing on the page claims the product has launched.
     liveUrl: "https://education-ten-wheat.vercel.app",
-    // Further screenshots, shown in a gallery below the case-study story.
-    // Add the files to `public/` and list them here.
-    // gallery: [{ src: "/admission-copilot-2.png", alt: "…" }],
+    /**
+     * Ordered as the journey runs: the hub, then eligibility, then the
+     * registration guide, the optional course-fit check, and finally the
+     * human hand-off. Each alt text describes what is actually on the screen.
+     *
+     * The registration guide is captioned as a wireframe because that is what
+     * the screen says it is — the page carries the label "Illustrative
+     * wireframe — not a screenshot of the real portal", and PRD section 8
+     * forbids presenting a mock as the genuine article.
+     */
+    gallery: [
+      {
+        src: "/admission-copilot-path.png",
+        alt: "Admission Copilot's admissions path page, headed 'Start where you are.', with three numbered steps: check what you qualify for, get walked through registration, and reach a person when you need one.",
+      },
+      {
+        src: "/admission-copilot-school-course.png",
+        alt: "The eligibility checker, headed 'Choose your school and course', with University of Lagos selected and Accounting chosen, above a notice advising applicants to confirm deadlines themselves and never share an OTP, PIN, or bank-card detail with a chat agent.",
+      },
+      {
+        src: "/admission-copilot-cbt-centre.png",
+        alt: "The registration guide for choosing a CBT centre: a nine-step checklist down the left with the first three steps complete and 'Choose a CBT centre' in progress, beside an illustrative panel on the right labelled 'Illustrative wireframe — not a screenshot of the real portal.'",
+      },
+      {
+        src: "/admission-copilot-course-fit.png",
+        alt: "The optional course-fit questionnaire, headed 'Would you actually enjoy it?', showing question 1 of 8 — 'When something at home stops working, I would rather open it up and look inside than wait for someone else to fix it.' — with radio-button answers beneath.",
+      },
+      {
+        src: "/admission-copilot-counselor.png",
+        alt: "The ask-a-counselor form, with a topic select and short title both set to 'Something else', above a message field containing a sample question and a request to reply in clear Nigerian English.",
+      },
+    ],
     featured: true,
     published: true,
   },

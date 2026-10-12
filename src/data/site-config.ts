@@ -25,7 +25,7 @@ export const siteConfig: SiteConfig = {
     // Re-confirm this date whenever the status changes. The content validator
     // fails if it goes stale, so the site can never claim availability that
     // nobody has checked (TRD section 8).
-    lastReviewed: "confirm availability with Bamidele",
+    lastReviewed: "2026-10-12",
   },
 
   contactEmail: "bamideleaug2002@gmail.com",
