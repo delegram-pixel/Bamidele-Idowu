@@ -1,0 +1,308 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Design tokens — "Claret & Lavender Blush"
+   --------------------------------------------------------------------------
+   DELIBERATE DEVIATION FROM design-brief.md SECTION 3.
+   The brief specifies a dark-first palette (midnight navy #0B1020 with electric
+   blue #2F6BFF). That direction was rejected in favour of the palette below,
+   supplied directly by the client:
+
+       Lavender Blush  #FFF0F5
+       Claret          #7F1734
+
+   Tokens are named for their ROLE, not their colour. The previous set was named
+   `midnight`, `electric`, `ice` — which is exactly how a palette change turns
+   into a liability: every component ends up referring to "midnight" for a pale
+   pink. With role names, the next palette change is this block and nothing else.
+
+   Every ratio below was COMPUTED, not estimated, and is recorded beside the
+   token. The project targets WCAG 2.2 AA (design-brief section 18, TRD 13).
+   ========================================================================== */
+@theme {
+  /* ---- Surfaces -------------------------------------------------------- */
+  --color-canvas: #fff0f5; /* page background — Lavender Blush */
+  --color-surface: #fbe7ee; /* recessed panels; 8.24:1 against ink */
+  --color-plate: #ffffff; /* plates that float above the canvas; 9.85:1 */
+
+  /* ---- Ink ------------------------------------------------------------- */
+  /* Claret and Blush are reciprocal: ink-on-canvas and canvas-on-ink both
+     measure 9.18:1. One pair therefore covers normal AND inverted sections,
+     which is the whole reason no third hue is introduced anywhere. */
+  --color-ink: #7f1734; /* primary text and display — 9.18:1 on canvas */
+  --color-ink-muted: #6e4a57; /* secondary body text — 6.85:1 on canvas */
+  --color-ink-faint: #a8768a; /* dimmed index items, disabled states.
+                                 3.4:1 — LARGE OR DECORATIVE TEXT ONLY.
+                                 Never put body copy on this token. */
+
+  /* ---- Accent ---------------------------------------------------------- */
+  /* Same claret as `ink`, named separately because it documents a different
+     job: interactive fills, marks, and rules. They are free to diverge later
+     without touching text colours. */
+  --color-accent: #7f1734;
+  --color-accent-deep: #5e0f26; /* solid fills and inverted sections —
+                                   12.11:1 with canvas, so buttons clear AA
+                                   with room to spare. */
+
+  /* Text and rules inside an inverted (claret) section. */
+  --color-invert-ink: #fff0f5; /* 12.11:1 on accent-deep — the reciprocal pair */
+  --color-invert-ink-muted: #dfbac4; /* 7.61:1 on accent-deep, 5.77:1 on claret.
+                                        The lower figure is the one that matters,
+                                        because it is the worst case if a panel
+                                        is ever set in `accent` rather than
+                                        `accent-deep`. */
+
+  /* ---- Hairlines ------------------------------------------------------- */
+  /* Printed rules, not UI borders: low-contrast by design. Anything that must
+     be perceived as a control uses `line-strong` or better. */
+  --color-line: color-mix(in oklab, #7f1734 18%, transparent);
+  --color-line-strong: color-mix(in oklab, #7f1734 34%, transparent);
+  --color-invert-line: color-mix(in oklab, #fff0f5 26%, transparent);
+
+  /* ---- Typography ------------------------------------------------------ */
+  /* `--font-instrument-serif` is supplied by next/font/google in
+     src/app/layout.tsx. The fallback stack is SERIF, not sans: if the webfont
+     never loads, a serif fallback keeps the editorial character, where a sans
+     fallback would silently change the entire identity of the page. */
+  --font-display: var(--font-instrument-serif), ui-serif, Georgia, "Times New Roman",
+    serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, "SF Mono",
+    Menlo, monospace;
+
+  /* Display scale, retuned for a high-contrast serif: it reads smaller and
+     lighter than a geometric sans at the same nominal size, so the scale moved
+     up from the original sans values. It then moved back DOWN again once the
+     left nav rail existed, because the rail takes 19rem out of the content
+     column and the hero headline is authored as explicit line breaks — a line
+     that outgrows its column does not clip, it silently re-wraps and destroys
+     the break the headline was designed around. These maxima are sized so the
+     longest authored line ("products people", 15 characters) still fits the
+     hero's 7-of-12 column at every width from 320px to 1920px. */
+  --text-display-sm: clamp(2.25rem, 7vw, 3.5rem);
+  --text-display: clamp(2.5rem, 8.5vw, 4.5rem);
+  --text-display-lg: clamp(3rem, 10vw, 6rem);
+
+  /* ---- Form ------------------------------------------------------------ */
+  /* The catalogue aesthetic wants crisp edges. Plates get a 2px radius so they
+     read as printed cards rather than as soft UI; anything rounder starts to
+     look like a generic template. */
+  --radius-plate: 2px;
+
+  /* Hard offset shadows, no blur. This is the single most load-bearing detail
+     of the collage look — a blurred drop shadow would make the plates read as
+     floating UI, where an offset block shadow makes them read as pasted paper. */
+  --shadow-plate: 10px 12px 0 0 color-mix(in oklab, #7f1734 10%, transparent);
+  --shadow-plate-lift: 18px 22px 0 0 color-mix(in oklab, #7f1734 14%, transparent);
+
+  /* ---- Motion ---------------------------------------------------------- */
+  /* Slower than the previous dark theme. A high-contrast serif rendered at
+     tech-startup speeds looks rushed; it needs time to resolve. Still well
+     inside the "smooth on mid-range phones" budget (design-brief section 14). */
+  --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 200ms;
+  --duration-base: 380ms;
+  --duration-slow: 900ms;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+@layer base {
+  html {
+    /* Anchors land below the fixed nav rather than under it. */
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    /* Instrument Serif ships a single weight (400). Without this, the browser
+       would synthesise a fake bold wherever a `font-weight` is inherited from a
+       UA style and the page would show a smeared faux-bold serif. Component
+       code therefore never sets a weight on display text — hierarchy comes from
+       size, case, and letterspacing instead. */
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    /* Guards against a stray wide element causing sideways scroll on mobile.
+       The rotated plate stacks make this a real risk (design-brief section 17). */
+    overflow-x: hidden;
+  }
+
+  /* Visible focus for keyboard users on every interactive element. `outline`
+     rather than a ring utility so it also applies to elements we did not style.
+     Claret on blush is 9.18:1, far clear of the 3:1 non-text minimum. */
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+
+  /* Hide the browser's default ring where we supply our own, but never
+     suppress :focus-visible above. */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    /* Weight is stated explicitly rather than left to inherit, so no accidental
+       synthesis can occur at any nesting depth. */
+    font-weight: 400;
+    /* A serif needs far less negative tracking than the sans it replaces —
+       the letterforms already sit close. Over-tightening closes the counters
+       and the high-contrast strokes start to collide. */
+    letter-spacing: -0.01em;
+    /* Avoids orphaned words in oversized headlines. */
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Lining figures, uniformly sized. Without this, Instrument Serif's default
+     numerals and the monospace metadata figures disagree in height and the
+     index counters look broken next to the labels. */
+  :root {
+    font-variant-numeric: lining-nums;
+  }
+
+  ::selection {
+    background-color: var(--color-accent-deep);
+    color: var(--color-canvas);
+  }
+
+  /* Respect the OS-level preference for less transparency. */
+  @media (prefers-reduced-transparency: reduce) {
+    .backdrop-blur-md,
+    .backdrop-blur-lg {
+      backdrop-filter: none;
+      background-color: var(--color-canvas);
+    }
+  }
+}
+
+/* ==========================================================================
+   Reduced motion
+   --------------------------------------------------------------------------
+   A blanket CSS safety net. JavaScript-driven animation is handled separately
+   by <MotionConfig reducedMotion="user"> and per-component useReducedMotion
+   checks, because Framer Motion animates through the Web Animations API and
+   would otherwise ignore these rules.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   Utilities
+   ========================================================================== */
+@utility container-page {
+  /* Single source of truth for page gutters: 16px at the narrowest supported
+     viewport, widening with the screen. */
+  margin-inline: auto;
+  width: 100%;
+  max-width: 80rem;
+  padding-inline: 1rem;
+
+  @media (width >= 40rem) {
+    padding-inline: 1.5rem;
+  }
+
+  @media (width >= 64rem) {
+    padding-inline: 2.5rem;
+  }
+
+  /* Room for the fixed left nav rail (design-brief section 7).
+     The rail is 14rem wide and sits on a 2.5rem gutter, so the left padding
+     grows to 19rem — leaving a 2.5rem gap between the rail and the content.
+     The max-width grows by the same amount so the content column keeps its
+     original measure instead of being squeezed narrower than it was before
+     the rail existed. Below this breakpoint the rail is not rendered and the
+     padding is unchanged. */
+  @media (width >= 80rem) {
+    max-width: 94rem;
+    padding-left: 19rem;
+    padding-right: 2.5rem;
+  }
+}
+
+/**
+ * Small uppercase monospace label — the catalogue's metadata voice.
+ *
+ * Used for section eyebrows, index counters, field labels, and table keys. It
+ * exists as a utility because it appears in a dozen places and the tracking is
+ * the whole point: these labels are set wide so they read as printed captions
+ * rather than as small body text.
+ */
+@utility label-meta {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  /* Keeps counters and clocks from jittering as digits change. */
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/**
+ * Screen-reader-only text that becomes visible when focused — used by the skip
+ * link so keyboard users can bypass the navigation.
+ */
+@utility sr-only-focusable {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+
+  &:focus-visible {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 100;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0.75rem 1.25rem;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+    background-color: var(--color-ink);
+    color: var(--color-canvas);
+    border-radius: var(--radius-plate);
+  }
+}
+
+/** Horizontal scroller used by the case-study rail: no visible scrollbar, but
+    still fully scrollable by wheel, touch, and keyboard. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
