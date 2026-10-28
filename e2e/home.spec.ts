@@ -85,11 +85,14 @@ test.describe("desktop navigation", () => {
 });
 
 test.describe("hero calls to action", () => {
-  test("takes the visitor to the contact section", async ({ page }) => {
+  test("opens the contact page", async ({ page }) => {
     await page.goto("/");
     await page.getByRole("link", { name: "Start a Project" }).first().click();
 
-    await expect(page.locator("#contact")).toBeInViewport();
+    await expect(page).toHaveURL(/\/contact$/);
+    await expect(
+      page.getByRole("heading", { level: 1, name: /want to start a new project/i }),
+    ).toBeVisible();
   });
 
   test("takes the visitor to the work section", async ({ page }) => {

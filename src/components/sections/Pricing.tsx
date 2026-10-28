@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Reveal } from "@/components/motion/Reveal";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { SECTION_IDS } from "@/data/nav";
@@ -73,12 +75,12 @@ export function Pricing() {
               ))}
             </ul>
 
-            <a
-              href={`#${SECTION_IDS.contact}`}
+            <Link
+              href="/contact"
               className="mt-8 inline-flex items-center gap-2 rounded-none bg-accent-deep px-6 py-3 text-sm font-medium text-canvas transition-[background-color,box-shadow] duration-fast hover:bg-ink hover:shadow-plate"
             >
               Request a quote
-            </a>
+            </Link>
           </div>
         </Reveal>
       </div>

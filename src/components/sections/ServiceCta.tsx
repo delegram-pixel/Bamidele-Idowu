@@ -1,11 +1,11 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { useContactPrefill } from "@/components/contact/ContactPrefillContext";
 import { Magnetic } from "@/components/motion/Magnetic";
-import { SECTION_IDS } from "@/data/nav";
 import { cn } from "@/lib/utils/cn";
 import type { ContactProjectType } from "@/types";
 
@@ -26,9 +26,10 @@ interface ServiceCtaProps {
 /**
  * "Enquire about this service" link.
  *
- * Sets the contact form's project type before following the anchor, so the
- * visitor arrives with the right option already chosen (app-flow section 4).
- * The `href` is a real anchor, so the jump works even if this handler never runs.
+ * Sets the contact form's project type before navigating, so the visitor
+ * arrives at the contact page with the right option already chosen (app-flow
+ * section 4). The `href` is a real link, so the destination still works if this
+ * handler never runs.
  */
 export function ServiceCta({
   projectType,
@@ -46,8 +47,8 @@ export function ServiceCta({
   if (variant === "solid") {
     return (
       <Magnetic>
-        <a
-          href={`#${SECTION_IDS.contact}`}
+        <Link
+          href="/contact"
           onClick={handleClick}
           className={cn(
             "inline-flex items-center gap-2 rounded-none px-6 py-3 text-sm font-medium",
@@ -61,14 +62,14 @@ export function ServiceCta({
         >
           {children}
           <ArrowRight aria-hidden="true" className="size-4" />
-        </a>
+        </Link>
       </Magnetic>
     );
   }
 
   return (
-    <a
-      href={`#${SECTION_IDS.contact}`}
+    <Link
+      href="/contact"
       onClick={handleClick}
       className={cn(
         "group label-meta inline-flex items-center gap-2",
@@ -86,6 +87,6 @@ export function ServiceCta({
         aria-hidden="true"
         className="size-3.5 transition-transform duration-fast group-hover:translate-x-1"
       />
-    </a>
+    </Link>
   );
 }

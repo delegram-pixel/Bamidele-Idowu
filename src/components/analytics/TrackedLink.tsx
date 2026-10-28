@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { AnchorHTMLAttributes } from "react";
 
 import { track } from "@/lib/analytics/track";
@@ -36,15 +37,26 @@ export function TrackedLink<K extends AnalyticsEventName>({
   children,
   ...rest
 }: TrackedLinkProps<K>) {
+  const handleClick = () => {
+    onNavigate?.();
+    track(event, eventProps);
+  };
+
+  // Internal routes use the client-side router so the visitor does not pay for
+  // a full document reload. Hash and off-site links stay plain anchors: one is
+  // a same-page jump, the other is not ours to route.
+  const isInternalRoute = href.startsWith("/") && !href.startsWith("//");
+
+  if (isInternalRoute) {
+    return (
+      <Link href={href} onClick={handleClick} {...rest}>
+        {children}
+      </Link>
+    );
+  }
+
   return (
-    <a
-      href={href}
-      onClick={() => {
-        onNavigate?.();
-        track(event, eventProps);
-      }}
-      {...rest}
-    >
+    <a href={href} onClick={handleClick} {...rest}>
       {children}
     </a>
   );

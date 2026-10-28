@@ -190,7 +190,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
           </p>
 
           <Link
-            href={`/#${SECTION_IDS.contact}`}
+            href="/contact"
             className="mt-8 inline-flex items-center gap-2 rounded-none bg-accent-deep px-7 py-3.5 text-base font-medium text-canvas transition-colors duration-fast hover:bg-ink hover:shadow-plate"
           >
             Start a Project

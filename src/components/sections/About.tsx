@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Reveal } from "@/components/motion/Reveal";
 import { FallbackArt } from "@/components/projects/FallbackArt";
 import { Section, SectionHeading } from "@/components/ui/Section";
@@ -50,12 +52,12 @@ export function About() {
 
             <Reveal delay={0.15}>
               <div className="mt-10">
-                <a
-                  href={`#${SECTION_IDS.contact}`}
+                <Link
+                  href="/contact"
                   className="inline-flex items-center gap-2 rounded-none bg-accent-deep px-7 py-3.5 text-base font-medium text-canvas transition-[background-color,box-shadow] duration-fast hover:bg-ink hover:shadow-plate"
                 >
                   Work with me
-                </a>
+                </Link>
               </div>
             </Reveal>
           </div>

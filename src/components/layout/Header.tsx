@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { SECTION_IDS } from "@/data/nav";
@@ -83,6 +85,7 @@ export function Header({ navItems, name }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const activeSection = useActiveSection();
+  const pathname = usePathname();
 
   // Returning focus to the toggle when the panel closes with Escape. Without
   // this, focus is on an element that the `hidden` attribute has just removed
@@ -122,6 +125,11 @@ export function Header({ navItems, name }: HeaderProps) {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [isMenuOpen]);
+
+  // The contact page is a full-bleed standalone sheet with its own masthead and
+  // close control. The fixed rail and top bar would sit on top of the claret
+  // field in claret text, so the chrome is removed rather than restyled.
+  if (pathname === "/contact") return null;
 
   const getIsActive = (href: string) => activeSection === href.replace("#", "");
 
@@ -166,12 +174,12 @@ export function Header({ navItems, name }: HeaderProps) {
             })}
           </ul>
 
-          <a
-            href={`#${SECTION_IDS.contact}`}
+          <Link
+            href="/contact"
             className="label-meta block bg-accent-deep px-5 py-4 text-center text-canvas transition-colors duration-fast hover:bg-ink"
           >
             Start a Project
-          </a>
+          </Link>
         </nav>
       </div>
 
@@ -228,12 +236,12 @@ export function Header({ navItems, name }: HeaderProps) {
           </nav>
 
           <div className="flex items-center gap-2">
-            <a
-              href={`#${SECTION_IDS.contact}`}
+            <Link
+              href="/contact"
               className="hidden bg-accent-deep px-5 py-2.5 text-sm font-medium text-canvas transition-colors duration-fast hover:bg-ink sm:inline-flex"
             >
               Start a Project
-            </a>
+            </Link>
 
             {/* Disclosure toggle */}
             <button
@@ -290,13 +298,13 @@ export function Header({ navItems, name }: HeaderProps) {
               ))}
             </ul>
 
-            <a
-              href={`#${SECTION_IDS.contact}`}
+            <Link
+              href="/contact"
               onClick={() => setIsMenuOpen(false)}
               className="mt-6 flex w-full items-center justify-center bg-accent-deep px-5 py-3 text-sm font-medium text-canvas"
             >
               Start a Project
-            </a>
+            </Link>
           </nav>
         </div>
       </div>

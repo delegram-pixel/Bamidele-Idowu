@@ -50,11 +50,12 @@ export function Footer() {
             <h2 className="label-meta text-invert-ink-muted">Navigate</h2>
             <ul className="mt-4 flex flex-col gap-2.5">
               {[
-                { label: "Work", href: `#${SECTION_IDS.work}` },
-                { label: "Services", href: `#${SECTION_IDS.services}` },
-                { label: "About", href: `#${SECTION_IDS.about}` },
-                { label: "Process", href: `#${SECTION_IDS.process}` },
-                { label: "Contact", href: `#${SECTION_IDS.contact}` },
+                { label: "Work", href: `/#${SECTION_IDS.work}` },
+                { label: "Services", href: `/#${SECTION_IDS.services}` },
+                { label: "About", href: `/#${SECTION_IDS.about}` },
+                { label: "Process", href: `/#${SECTION_IDS.process}` },
+                { label: "Contact", href: `/#${SECTION_IDS.contact}` },
+                { label: "Let's Talk", href: "/contact" },
               ].map((item) => (
                 <li key={item.href}>
                   <a href={item.href} className={linkClassName}>

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { SECTION_IDS } from "@/data/nav";
@@ -61,8 +62,8 @@ export function PersistentCta() {
         isVisible ? "opacity-100" : "opacity-0",
       ].join(" ")}
     >
-      <a
-        href={`#${SECTION_IDS.contact}`}
+      <Link
+        href="/contact"
         tabIndex={isVisible ? 0 : -1}
         aria-hidden={!isVisible}
         onClick={() => track(ANALYTICS_EVENTS.heroContactClick)}
@@ -78,7 +79,7 @@ export function PersistentCta() {
           className="size-1.5 bg-canvas"
         />
         Start a Project
-      </a>
+      </Link>
     </div>
   );
 }

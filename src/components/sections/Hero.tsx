@@ -105,7 +105,7 @@ export function Hero() {
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
               <TrackedLink
-                href={`#${SECTION_IDS.contact}`}
+                href="/contact"
                 event={ANALYTICS_EVENTS.heroContactClick}
                 className="inline-flex items-center justify-center rounded-none bg-accent-deep px-7 py-3.5 text-base font-medium text-canvas transition-[background-color,box-shadow] duration-fast hover:bg-ink hover:shadow-plate"
               >
